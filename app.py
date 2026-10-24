@@ -250,13 +250,37 @@ if pagina == "Visão Geral":
         renovavel_pct = linha_ano.get("renewables_share_elec", 0)
         solar_pct = linha_ano.get("solar_share_elec", 0)
         eolica_pct = linha_ano.get("wind_share_elec", 0)
+        hidro_pct = linha_ano.get("hydro_share_elec", 0)
         fossil_pct = linha_ano.get("fossil_share_elec", 0)
 
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric(" % Energia Renovável", f"{renovavel_pct:.1f}%" if pd.notna(renovavel_pct) else "N/A")
-        c2.metric("☀️  Participação Solar", f"{solar_pct:.1f}%" if pd.notna(solar_pct) else "N/A")
-        c3.metric("💨  Participação Eólica", f"{eolica_pct:.1f}%" if pd.notna(eolica_pct) else "N/A")
-        c4.metric("🔥 Fonte Fóssil", f"{fossil_pct:.1f}%" if pd.notna(fossil_pct) else "N/A")
+        # Agora usando 5 colunas para fechar a conta dos 100% da matriz
+        c1, c2, c3, c4, c5 = st.columns(5)
+        
+        c1.metric(
+            "🌱 % Renovável Total", 
+            f"{renovavel_pct:.1f}%" if pd.notna(renovavel_pct) else "N/A",
+            help="Soma de todas as fontes limpas: Hidroelétrica, Solar, Eólica, Biomassa, etc."
+        )
+        c2.metric(
+            "💧 Hidroelétrica", 
+            f"{hidro_pct:.1f}%" if pd.notna(hidro_pct) else "N/A",
+            help="Participação da geração hídrica no total nacional."
+        )
+        c3.metric(
+            "💨 Eólica", 
+            f"{eolica_pct:.1f}%" if pd.notna(eolica_pct) else "N/A",
+            help="Participação da geração eólica no total nacional."
+        )
+        c4.metric(
+            "☀️ Solar", 
+            f"{solar_pct:.1f}%" if pd.notna(solar_pct) else "N/A",
+            help="Participação da geração solar no total nacional."
+        )
+        c5.metric(
+            "🔥 Fóssil / Outros", 
+            f"{fossil_pct:.1f}%" if pd.notna(fossil_pct) else "N/A",
+            help="Fontes não renováveis (Gás Natural, Carvão, Óleo)."
+        )
     else:
         st.warning("Sem dados para o ano selecionado.")
 
