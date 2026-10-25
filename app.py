@@ -247,25 +247,32 @@ if pagina == "Visão Geral":
     
     if not df_ano.empty:
         linha_ano = df_ano.iloc[0]
+        
+        # 1. Puxa os dados brutos da linha
         renovavel_pct = linha_ano.get("renewables_share_elec", 0)
         solar_pct = linha_ano.get("solar_share_elec", 0)
         eolica_pct = linha_ano.get("wind_share_elec", 0)
         hidro_pct = linha_ano.get("hydro_share_elec", 0)
-        fossil_pct = linha_ano.get("fossil_share_elec", 0)
         
-        # O que sobrar das fontes renováveis vai para Outras Limpas (Biomassa, PCHs, etc.)
-        outras_renovaveis = max(0.0, renovavel_pct - (hidro_pct + eolica_pct + solar_pct))
+        # 2. Arredonda cada valor individualmente para 1 casa decimal
+        renovavel_val = round(renovavel_pct, 1) if pd.notna(renovavel_pct) else 0.0
+        hidro_val = round(hidro_pct, 1) if pd.notna(hidro_pct) else 0.0
+        eolica_val = round(eolica_pct, 1) if pd.notna(eolica_pct) else 0.0
+        solar_val = round(solar_pct, 1) if pd.notna(solar_pct) else 0.0
+        
+        # 3. Calcula 'Outras Limpas' usando os valores já arredondados (evita a diferença de 0.1%)
+        outras_renovaveis = max(0.0, round(renovavel_val - (hidro_val + eolica_val + solar_val), 1))
 
         # Layout com colunas proporcionais + coluna central com o sinal "="
         col_total, col_sinal, col_hidro, col_eolica, col_solar, col_outras = st.columns(
             [2.2, 0.4, 2, 2, 2, 2]
         )
         
-        # 1. CARTÃO TOTAL (DESTACADO)
+        # 1. CARTÃO TOTAL
         with col_total:
             st.metric(
                 "🌱 % Renovável Total", 
-                f"{renovavel_pct:.1f}%" if pd.notna(renovavel_pct) else "N/A",
+                f"{renovavel_val:.1f}%",
                 help="Soma de todas as fontes limpas da matriz elétrica."
             )
 
@@ -291,21 +298,21 @@ if pagina == "Visão Geral":
         with col_hidro:
             st.metric(
                 "💧 Hidroelétrica", 
-                f"{hidro_pct:.1f}%" if pd.notna(hidro_pct) else "N/A",
+                f"{hidro_val:.1f}%",
                 help="Participação da geração hídrica."
             )
 
         with col_eolica:
             st.metric(
                 "💨 Eólica", 
-                f"{eolica_pct:.1f}%" if pd.notna(eolica_pct) else "N/A",
+                f"{eolica_val:.1f}%",
                 help="Participação da geração eólica."
             )
 
         with col_solar:
             st.metric(
                 "☀️ Solar", 
-                f"{solar_pct:.1f}%" if pd.notna(solar_pct) else "N/A",
+                f"{solar_val:.1f}%",
                 help="Participação da geração solar."
             )
 
