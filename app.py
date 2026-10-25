@@ -252,35 +252,70 @@ if pagina == "Visão Geral":
         eolica_pct = linha_ano.get("wind_share_elec", 0)
         hidro_pct = linha_ano.get("hydro_share_elec", 0)
         fossil_pct = linha_ano.get("fossil_share_elec", 0)
-
-        # Agora usando 5 colunas para fechar a conta dos 100% da matriz
-        c1, c2, c3, c4, c5 = st.columns(5)
         
-        c1.metric(
-            "🌱 % Renovável Total", 
-            f"{renovavel_pct:.1f}%" if pd.notna(renovavel_pct) else "N/A",
-            help="Soma de todas as fontes limpas: Hidroelétrica, Solar, Eólica, Biomassa, etc."
+        # O que sobrar das fontes renováveis vai para Outras Limpas (Biomassa, PCHs, etc.)
+        outras_renovaveis = max(0.0, renovavel_pct - (hidro_pct + eolica_pct + solar_pct))
+
+        # Layout com colunas proporcionais + coluna central com o sinal "="
+        col_total, col_sinal, col_hidro, col_eolica, col_solar, col_outras = st.columns(
+            [2.2, 0.4, 2, 2, 2, 2]
         )
-        c2.metric(
-            "💧 Hidroelétrica", 
-            f"{hidro_pct:.1f}%" if pd.notna(hidro_pct) else "N/A",
-            help="Participação da geração hídrica no total nacional."
-        )
-        c3.metric(
-            "💨 Eólica", 
-            f"{eolica_pct:.1f}%" if pd.notna(eolica_pct) else "N/A",
-            help="Participação da geração eólica no total nacional."
-        )
-        c4.metric(
-            "☀️ Solar", 
-            f"{solar_pct:.1f}%" if pd.notna(solar_pct) else "N/A",
-            help="Participação da geração solar no total nacional."
-        )
-        c5.metric(
-            "🔥 Fóssil / Outros", 
-            f"{fossil_pct:.1f}%" if pd.notna(fossil_pct) else "N/A",
-            help="Fontes não renováveis (Gás Natural, Carvão, Óleo)."
-        )
+        
+        # 1. CARTÃO TOTAL (DESTACADO)
+        with col_total:
+            st.metric(
+                "🌱 % Renovável Total", 
+                f"{renovavel_pct:.1f}%" if pd.notna(renovavel_pct) else "N/A",
+                help="Soma de todas as fontes limpas da matriz elétrica."
+            )
+
+        # 2. SINAL DE IGUAL (=)
+        with col_sinal:
+            st.markdown(
+                """
+                <div style="
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    height: 85px; 
+                    font-size: 2rem; 
+                    font-weight: 800; 
+                    color: #10B981;">
+                    =
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        # 3. DETALHAMENTO DAS FONTES QUE SOMAM O TOTAL
+        with col_hidro:
+            st.metric(
+                "💧 Hidroelétrica", 
+                f"{hidro_pct:.1f}%" if pd.notna(hidro_pct) else "N/A",
+                help="Participação da geração hídrica."
+            )
+
+        with col_eolica:
+            st.metric(
+                "💨 Eólica", 
+                f"{eolica_pct:.1f}%" if pd.notna(eolica_pct) else "N/A",
+                help="Participação da geração eólica."
+            )
+
+        with col_solar:
+            st.metric(
+                "☀️ Solar", 
+                f"{solar_pct:.1f}%" if pd.notna(solar_pct) else "N/A",
+                help="Participação da geração solar."
+            )
+
+        with col_outras:
+            st.metric(
+                "🌴 Outras Limpas", 
+                f"{outras_renovaveis:.1f}%",
+                help="Biomassa, Geotérmica e outras renováveis menores."
+            )
+            
     else:
         st.warning("Sem dados para o ano selecionado.")
 
