@@ -542,40 +542,13 @@ if pagina == "Visão Geral":
 
 
         # 2. SINAL DE IGUAL (=)
-
         with col_sinal:
-
             st.markdown(
-
-                """
-
-                <div style="
-
-                    display: flex; 
-
-                    align-items: center; 
-
-                    justify-content: center; 
-
-                    height: 85px; 
-
-                    font-size: 2rem; 
-
-                    font-weight: 800; 
-
-                    color: #10B981;">
-
-                    =
-
-                </div>
-
-                """,
-
+                """<div style="display: flex; align-items: center; justify-content: center; height: 85px; font-size: 2rem; font-weight: 800; color: #10B981;">
+                =
+                </div>""",
                 unsafe_allow_html=True
-
             )
-
-
 
         # 3. DETALHAMENTO DAS FONTES QUE SOMAM O TOTAL
 
