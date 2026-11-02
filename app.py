@@ -444,30 +444,17 @@ col_vis2.metric("Únicos", f"{visitantes_unicos:,}".replace(",", "."))
 
 # Header Hero
 
+# Header Hero
 st.markdown(
-
-    f"""
-
-    <div class="hero">
-
-        <div class="hero-eyebrow">Painel Analytics · Transição Energética</div>
-
-        <div class="hero-title">Clean Energy Dashboard</div>
-
-        <div class="hero-subtitle">
-
-            Análise para <b>{pais_selecionado}</b> &nbsp;·&nbsp; Ano base {ano_selecionado}
-
-        </div>
-
+    f"""<div class="hero">
+    <div class="hero-eyebrow">Painel Analytics · Transição Energética</div>
+    <div class="hero-title">Clean Energy Dashboard</div>
+    <div class="hero-subtitle">
+        Análise para <b>{pais_selecionado}</b> &nbsp;·&nbsp; Ano base {ano_selecionado}
     </div>
-
-    """,
-
+</div>""",
     unsafe_allow_html=True,
-
 )
-
 
 
 # Filtrar dados do país
